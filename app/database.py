@@ -52,7 +52,22 @@ def get_event_count():
     connection.close()
 
     return count
+def get_events_by_severity(severity):
+    connection = get_connection()
 
+    events = connection.execute(
+        """
+        SELECT id, timestamp, event_type, severity, source, message
+        FROM security_events
+        WHERE severity = ?
+        ORDER BY id DESC
+        """,
+        (severity,)
+    ).fetchall()
+
+    connection.close()
+
+    return events
 
 if __name__ == "__main__":
     initialize_database()
