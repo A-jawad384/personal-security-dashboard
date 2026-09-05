@@ -25,6 +25,20 @@ def initialize_database():
     connection.commit()
     connection.close()
 
+def get_all_events():
+    connection = get_connection()
+
+    events = connection.execute(
+        """
+        SELECT id, timestamp, event_type, severity, source, message
+        FROM security_events
+        ORDER BY id DESC
+        """
+    ).fetchall()
+
+    connection.close()
+
+    return events
 
 if __name__ == "__main__":
     initialize_database()
