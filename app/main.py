@@ -1,22 +1,42 @@
-from datetime import datetime
-
-
-LOG_FILE = "logs/security_events.log"
-
-
-def log_event(event_type, message):
-    timestamp = datetime.now().isoformat()
-
-    log_entry = f"{timestamp} | {event_type} | {message}\n"
-
-    with open(LOG_FILE, "a") as file:
-        file.write(log_entry)
+from logger import log_event
 
 
 print("Personal Security Monitoring Dashboard")
 print("Security monitoring system is starting...")
 
-log_event("LOGIN_SUCCESS", "User logged in successfully")
-log_event("LOGIN_FAILED", "Failed login attempt detected")
+log_event(
+    "LOGIN_SUCCESS",
+    "LOW",
+    "authentication",
+    "User logged in successfully"
+)
+
+log_event(
+    "LOGIN_FAILED",
+    "HIGH",
+    "authentication",
+    "Failed login attempt detected"
+)
+
+log_event(
+    "PASSWORD_CHANGED",
+    "MEDIUM",
+    "account",
+    "User password was changed"
+)
+
+log_event(
+    "SUSPICIOUS_ACTIVITY",
+    "CRITICAL",
+    "security",
+    "Multiple failed login attempts detected"
+)
+
+log_event(
+    "SYSTEM_EVENT",
+    "LOW",
+    "system",
+    "Security monitoring system started"
+)
 
 print("Security events recorded successfully.")
