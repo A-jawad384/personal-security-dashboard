@@ -92,3 +92,20 @@ def get_severity_count(severity):
 if __name__ == "__main__":
     initialize_database()
     print("Database initialized successfully.")
+
+
+def get_event_type_count(event_type):
+    connection = get_connection()
+
+    count = connection.execute(
+        """
+        SELECT COUNT(*)
+        FROM security_events
+        WHERE event_type = ?
+        """,
+        (event_type,)
+    ).fetchone()[0]
+
+    connection.close()
+
+    return count

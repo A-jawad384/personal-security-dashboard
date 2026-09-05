@@ -1,8 +1,8 @@
-from database import get_severity_count
+from database import get_event_type_count
 
 
 def detect_multiple_failed_logins(threshold=3):
-    failed_login_count = get_severity_count("HIGH")
+    failed_login_count = get_event_type_count("LOGIN_FAILED")
 
     if failed_login_count >= threshold:
         return {
