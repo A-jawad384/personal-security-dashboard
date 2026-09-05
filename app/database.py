@@ -25,6 +25,7 @@ def initialize_database():
     connection.commit()
     connection.close()
 
+
 def get_all_events():
     connection = get_connection()
 
@@ -39,6 +40,19 @@ def get_all_events():
     connection.close()
 
     return events
+
+
+def get_event_count():
+    connection = get_connection()
+
+    count = connection.execute(
+        "SELECT COUNT(*) FROM security_events"
+    ).fetchone()[0]
+
+    connection.close()
+
+    return count
+
 
 if __name__ == "__main__":
     initialize_database()
