@@ -54,7 +54,21 @@ def get_event_count():
     return count
 def get_events_by_severity(severity):
     connection = get_connection()
+def get_severity_count(severity):
+    connection = get_connection()
 
+    count = connection.execute(
+        """
+        SELECT COUNT(*)
+        FROM security_events
+        WHERE severity = ?
+        """,
+        (severity,)
+    ).fetchone()[0]
+
+    connection.close()
+
+    return count
     events = connection.execute(
         """
         SELECT id, timestamp, event_type, severity, source, message
