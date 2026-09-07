@@ -117,11 +117,6 @@ def get_event_type_count(event_type):
     return count
 
 
-if __name__ == "__main__":
-    initialize_database()
-    print("Database initialized successfully.")
-
-
 def create_alert(alert_type, severity, message):
     from datetime import datetime
 
@@ -158,3 +153,22 @@ def has_active_alert(alert_type):
     connection.close()
 
     return count > 0
+
+def get_all_alerts():
+    connection = get_connection()
+
+    alerts = connection.execute(
+        """
+        SELECT id, timestamp, alert_type, severity, message, status
+        FROM alerts
+        ORDER BY id DESC
+        """
+    ).fetchall()
+
+    connection.close()
+
+    return alerts
+
+if __name__ == "__main__":
+    initialize_database()
+    print("Database initialized successfully.")
