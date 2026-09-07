@@ -168,7 +168,21 @@ def get_all_alerts():
     connection.close()
 
     return alerts
+def resolve_alert(alert_id):
+    connection = get_connection()
 
+    connection.execute(
+        """
+        UPDATE alerts
+        SET status = 'RESOLVED'
+        WHERE id = ?
+        """,
+        (alert_id,)
+    )
+
+    connection.commit()
+    connection.close()
+    
 if __name__ == "__main__":
     initialize_database()
     print("Database initialized successfully.")
