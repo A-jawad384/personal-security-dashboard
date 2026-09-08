@@ -1,9 +1,10 @@
-from flask import Flask
+from flask import Flask, request
 from database import (
     initialize_database,
     get_event_count,
     get_all_events,
-    get_all_alerts
+    get_all_alerts,
+    get_events_by_severity
 )
 
 app = Flask(__name__)
@@ -18,7 +19,15 @@ def severity_class(severity):
 @app.route("/")
 def dashboard():
     event_count = get_event_count()
-    events = get_all_events()
+    severity = request.args.get("severity")
+
+    if severity:
+        events = get_events_by_severity(severity)
+    else:
+        events = get_all_events()
+
+    displayed_event_count = len(events)
+
     alerts = get_all_alerts()
 
     new_alerts = sum(1 for alert in alerts if alert[5] == "NEW")
@@ -333,7 +342,19 @@ def dashboard():
                     </span>
                 </div>
 
-                <div class="table-container">
+                <div style="margin: 15px 0;">
+    <form method="get">
+        <label for="severity"><strong>Filter by Severity:</strong></label>
+
+        <select name="severity" id="severity" onchange="this.form.submit()">
+            <option value="">All Severities</option>
+            <option value="LOW">LOW</option>
+            <option value="MEDIUM">MEDIUM</option>
+            <option value="HIGH">HIGH</option>
+            <option value="CRITICAL">CRITICAL</option>
+        </select>
+    </form>
+</div>
 
                     <table>
 
@@ -384,12 +405,47 @@ def dashboard():
 
             <div class="section">
 
-                <div class="section-header">
-                    <h2>🔐 Security Events</h2>
-                    <span class="badge badge-resolved">
-                        """ + str(event_count) + """ Events
-                    </span>
-                </div>
+             <div class="section-header">
+
+    <div>
+        <h2>🔐 Security Events</h2>
+
+        <form method="GET" style="margin-top: 10px;">
+
+            <label for="severity">
+                <strong>Filter by Severity:</strong>
+            </label>
+
+            <select name="severity" id="severity" onchange="this.form.submit()">
+
+                <option value="">All Severities</option>
+
+                <option value="LOW" """ + ("selected" if severity == "LOW" else "") + """>
+                    LOW
+                </option>
+
+                <option value="MEDIUM" """ + ("selected" if severity == "MEDIUM" else "") + """>
+                    MEDIUM
+                </option>
+
+                <option value="HIGH" """ + ("selected" if severity == "HIGH" else "") + """>
+                    HIGH
+                </option>
+
+                <option value="CRITICAL" """ + ("selected" if severity == "CRITICAL" else "") + """>
+                    CRITICAL
+                </option>
+
+            </select>
+
+        </form>
+    </div>
+
+    <span class="badge badge-resolved">
+        """ + str(displayed_event_count) + (" Event" if displayed_event_count == 1 else " Events") + """
+    </span>
+
+</div>
 
                 <div class="table-container">
 
