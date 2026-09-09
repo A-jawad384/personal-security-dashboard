@@ -1,10 +1,11 @@
-from flask import Flask, request
+from flask import Flask, request, redirect
 from database import (
     initialize_database,
     get_event_count,
     get_all_events,
     get_all_alerts,
-    get_events_by_severity
+    get_events_by_severity,
+    resolve_alert
 )
 
 app = Flask(__name__)
@@ -15,6 +16,14 @@ initialize_database()
 def severity_class(severity):
     return severity.lower()
 
+
+@app.route("/resolve-alert/<int:alert_id>", methods=["POST"])
+def resolve_alert_route(alert_id):
+    from database import resolve_alert
+
+    resolve_alert(alert_id)
+
+    return redirect(request.referrer or "/")
 
 @app.route("/")
 def dashboard():
@@ -386,11 +395,17 @@ def dashboard():
 
                             <td>{alert[4]}</td>
 
-                            <td>
-                                <span class="badge {status_class}">
-                                    {alert[5]}
-                                </span>
-                            </td>
+                     <td>
+    <span class="badge {status_class}">
+        {alert[5]}
+    </span>
+
+  {"<form method='POST' action='/resolve-alert/" + str(alert[0]) + "' style='display:inline;'><button type='submit' class='resolve-button'>Resolve</button></form>" if alert[5] == "NEW" else ""}
+</td>   
+                            
+                                    
+                                
+                        
                         </tr>
         """
 
