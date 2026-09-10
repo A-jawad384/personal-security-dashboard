@@ -5,6 +5,7 @@ from database import (
     get_all_events,
     get_all_alerts,
     get_events_by_severity,
+    get_severity_count,
     resolve_alert
 )
 
@@ -29,6 +30,11 @@ def resolve_alert_route(alert_id):
 def dashboard():
     event_count = get_event_count()
     severity = request.args.get("severity")
+
+    low_count = get_severity_count("LOW")
+    medium_count = get_severity_count("MEDIUM")
+    high_count = get_severity_count("HIGH")
+    critical_count = get_severity_count("CRITICAL")
 
     if severity:
         events = get_events_by_severity(severity)
@@ -341,15 +347,62 @@ def dashboard():
 
             </div>
 
-
             <div class="section">
 
                 <div class="section-header">
-                    <h2>🚨 Security Alerts</h2>
-                    <span class="badge badge-new">
-                        """ + str(new_alerts) + """ Active
+                    <h2>📊 Security Analytics</h2>
+                    <span class="badge badge-resolved">
+                        Events by Severity
                     </span>
                 </div>
+
+                <div class="cards">
+
+                    <div class="card">
+                        <div class="card-title">LOW</div>
+                        <div class="card-value">
+                            """ + str(low_count) + """
+                        </div>
+                        <div class="card-description">
+                            Low-risk events
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">MEDIUM</div>
+                        <div class="card-value">
+                            """ + str(medium_count) + """
+                        </div>
+                        <div class="card-description">
+                            Moderate-risk events
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">HIGH</div>
+                        <div class="card-value high">
+                            """ + str(high_count) + """
+                        </div>
+                        <div class="card-description">
+                            High-risk events
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">CRITICAL</div>
+                        <div class="card-value critical">
+                            """ + str(critical_count) + """
+                        </div>
+                        <div class="card-description">
+                            Critical events
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
 
                 <div style="margin: 15px 0;">
     <form method="get">
