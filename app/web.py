@@ -296,6 +296,7 @@ def dashboard():
             }
 
         </style>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </head>
 
     <body>
@@ -343,14 +344,19 @@ def dashboard():
                     <div class="card-title">HIGH / CRITICAL EVENTS</div>
                     <div class="card-value high">""" + str(high_events + critical_events) + """</div>
                     <div class="card-description">Higher-risk events</div>
+                     </div>
+
+                <div style="margin-top: 25px;">
+                    <canvas id="severityChart"></canvas>
                 </div>
 
             </div>
 
+
             <div class="section">
 
                 <div class="section-header">
-                    <h2>📊 Security Analytics</h2>
+                    <h2>🚨 Security Alerts</h2>
                     <span class="badge badge-resolved">
                         Events by Severity
                     </span>
@@ -571,6 +577,41 @@ def dashboard():
             | Flask + SQLite + Python
 
         </footer>
+                <script>
+            const ctx = document.getElementById("severityChart");
+
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
+                    datasets: [{
+                        label: "Security Events",
+                        data: [
+                            """ + str(low_count) + """,
+                            """ + str(medium_count) + """,
+                            """ + str(high_count) + """,
+                            """ + str(critical_count) + """
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
 
     </body>
 
